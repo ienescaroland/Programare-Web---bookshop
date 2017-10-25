@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<h2 class="page-header">List of books</h2>
+	<table class="table table-hover"> 
+		<thead> 
+		 	<tr> 
+		 		<th>#</th> 
+		 		<th>Title</th> 
+		 		<th>Author</th> 
+				<th>Price</th> 
+				<th></th>
+	 		</tr> 
+	 	</thead> 
+	 	<tbody> 
+	 	{% for book in books %}
+	 		<tr> 
+		 		<th scope="row">{{book.id}}</th> 
+		 			<td>{{book.title}}</td> 
+		 			<td>{{book.author}}</td> 
+		 			<td>{{book.price}}£</td> 
+		 			<td><a href="/bookshop/details/{{book.id}}" class="btn btn-primary">View</a></td>
+		 		</tr> 
+	 	{% endfor %}
+		</tbody> 
+	</table> 	 
+
+{% endblock %}
