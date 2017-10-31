@@ -2,6 +2,12 @@
 
 {% block body %}
 
-	bookshop details
-
+	<a class="btn btn-default" href="/books">Back to Books</a>
+	<hr>
+	<h2 class="page-header">{{book.title}}</h2>
+	<ul class="list-group">
+		<li class = "list-group-item">Author: {{book.author}}</li>
+		<li class = "list-group-item">Price: {{book.price}}£</li>
+	</ul>
+	
 {% endblock %}

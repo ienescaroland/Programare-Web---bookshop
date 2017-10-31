@@ -16,7 +16,7 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
   </head>
 
-  <body style="background-iamge: url("");">
+  <body style="background-iamge: url('images/indeximg.jpg')">
 
     <nav class="navbar navbar-inverse">
         <div class="container">
@@ -44,7 +44,11 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
+                {% for flash_message in app.session.flashbag.get('notice') %}
+                    <div class="alert alert-success">{{flash_message}}</div>
+                {% endfor %}
                 {% block body %}{% endblock %}
+                
             </div>
         </div>
     </div>

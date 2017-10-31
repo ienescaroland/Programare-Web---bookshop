@@ -5,7 +5,7 @@
 	<table class="table table-hover"> 
 		<thead> 
 		 	<tr> 
-		 		<th>#</th> 
+		 		<th></th> 
 		 		<th>Title</th> 
 		 		<th>Author</th> 
 				<th>Price</th> 
@@ -15,14 +15,22 @@
 	 	<tbody> 
 	 	{% for book in books %}
 	 		<tr> 
-		 		<th scope="row">{{book.id}}</th> 
+		 		<th scope="row"></th> 
 		 			<td>{{book.title}}</td> 
 		 			<td>{{book.author}}</td> 
 		 			<td>{{book.price}}£</td> 
-		 			<td><a href="/bookshop/details/{{book.id}}" class="btn btn-primary">View</a></td>
+		 			<td>
+		 				<a href="/bookshop/details/{{book.id}}" class="btn btn-primary">View</a>
+		 				<a href="/bookshop/edit/{{book.id}}" class="btn btn-default">Edit</a>
+		 				<a href="/bookshop/delete/{{book.id}}" class="btn btn-danger">Delete</a>
+		 			</td>
 		 		</tr> 
 	 	{% endfor %}
 		</tbody> 
 	</table> 	 
+
+	<div class="navigation text-center">
+		{{ knp_pagination_render(books) }}
+	</div>
 
 {% endblock %}
