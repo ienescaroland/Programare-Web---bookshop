@@ -2,13 +2,30 @@
 
 {% block body %}
 	<h2 class="page-header">List of books</h2>
+
+	<div>
+        <form action="{{ path('bookshop_books') }}" method="get">
+            <label for="filter">Filter by Author</label>
+            <input name="filterauthor" type="text">
+            <button type="submit" class="btn btn-default btn-sm">Filter Now</button>
+        </form>
+	</div>
+
+	<div>
+        <form action="{{ path('bookshop_books') }}" method="get">
+            <label for="filter">Filter by Title</label>
+            <input name="filterbook" type="text">
+            <button type="submit" class="btn btn-default btn-sm">Filter Now</button>
+        </form>
+	</div>
+
 	<table class="table table-hover"> 
 		<thead> 
 		 	<tr> 
 		 		<th></th> 
-		 		<th>Title</th> 
-		 		<th>Author</th> 
-				<th>Price</th> 
+		 		<th>{{ knp_pagination_sortable(books, 'Title', 'b.title') }}</th> 
+		 		<th>{{ knp_pagination_sortable(books, 'Author', 'b.author') }}</th> 
+				<th>{{ knp_pagination_sortable(books, 'Price', 'b.price') }}</th> 
 				<th></th>
 	 		</tr> 
 	 	</thead> 

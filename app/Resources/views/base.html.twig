@@ -11,13 +11,14 @@
     <title>{% block title %}Bookshop{% endblock %}</title>
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-
-    {% block stylesheets %}{% endblock %}
+    
+    {% block stylesheets %}
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/styles.css') }}" />
+    {% endblock %}
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
   </head>
 
-  <body style="background-iamge: url('images/indeximg.jpg')">
-
+  <body>
     <nav class="navbar navbar-inverse">
         <div class="container">
             <div class="navbar-header">

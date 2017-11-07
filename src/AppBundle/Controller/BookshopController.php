@@ -27,11 +27,22 @@ class BookshopController extends Controller
     public function booksAction(Request $request)
     {   
         $em = $this->getDoctrine()->getManager();
-        $books = $this->getDoctrine()
-            ->getRepository('AppBundle:Book')
-            ->findAll();
-        $dql = "SELECT b FROM AppBundle:Book b";
-        $query = $em->createQuery($dql);
+        //$books = $this->getDoctrine()
+        //    ->getRepository('AppBundle:Book')
+        //    ->findAll();
+        //$dql = "SELECT b FROM AppBundle:Book b";
+        //$query = $em->createQuery($dql);
+
+        $queryBuilder = $em->getRepository('AppBundle:Book')->createQueryBuilder('b');
+        if ($request->query->getAlnum('filterbook')) {
+            $queryBuilder->where('b.title LIKE :title')
+                ->setParameter('title', '%' . $request->query->getAlnum('filterbook') . '%');
+        }
+        if ($request->query->getAlnum('filterauthor')) {
+            $queryBuilder->where('b.author LIKE :author')
+                ->setParameter('author', '%' . $request->query->getAlnum('filterauthor') . '%');
+        }
+        $query = $queryBuilder->getQuery();
 
         $paginator = $this->get('knp_paginator');
         $result = $paginator->paginate(
