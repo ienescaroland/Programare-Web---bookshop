@@ -11,10 +11,11 @@
     <title>{% block title %}Bookshop{% endblock %}</title>
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootflat/2.0.4/css/bootflat.min.css">
     
-    {% block stylesheets %}
-        <link rel="stylesheet" type="text/css" href="{{ asset('css/styles.css') }}" />
-    {% endblock %}
+    {% block stylesheets %}{% endblock %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/styles.css') }}" />
+  
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
   </head>
 
@@ -37,6 +38,13 @@
                     <li><a href="/">Home</a></li>
                     <li><a href="/books">Books</a></li>
                     <li><a href="/add">Add books</a></li>
+
+                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                        <li style="float: right;"><a href=" {{ logout_path() }} ">Logout</a></li>
+                    {% else %}
+                        <li style="float: right;"><a href="/login">Login</a></li>
+                        <li style="float: right;"><a href="/register">Register</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

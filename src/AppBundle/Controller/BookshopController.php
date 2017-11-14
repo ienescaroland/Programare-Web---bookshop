@@ -3,13 +3,16 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Book;
+use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use AppBundle\Form\UserType;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class BookshopController extends Controller
 {
@@ -174,5 +177,53 @@ class BookshopController extends Controller
         );
 
         return $this->redirectToRoute('bookshop_books');
+    }
+
+    /**
+     * @Route("/login", name="login")
+     */
+    public function loginAction(Request $request, AuthenticationUtils $authenticationUtils)
+    {
+        $errors = $authenticationUtils->getLastAuthenticationError();
+        $lastUserName = $authenticationUtils->getLastUsername();
+
+        return $this->render('bookshop/login.html.twig', array(
+            'errors' => $errors,
+            'username' => $lastUserName,
+        ));
+    }
+
+    /**
+     * @Route("/logout", name="logout")
+     */
+    public function logoutAction()
+    {
+
+    }
+
+    /**
+     * @Route("/register", name="register")
+     */
+    public function registerAction(Request $request, UserPasswordEncoderInterface $encoder)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = new User();
+
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            //create user
+            $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
+
+            $em->persist($user);
+            $em->flush();
+
+            return $this->redirectToRoute('login');
+        }
+
+        return $this->render('bookshop/register.html.twig', array(
+            'form' => $form->createView()
+        ));
     }
 }
