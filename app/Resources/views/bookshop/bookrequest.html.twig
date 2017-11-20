@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+	<h3 class="page-header">Make a Request</h3>
+	{{form_start(form)}}
+	{{form_widget(form)}}
+	{{form_end(form)}}
+	
+	<table class="table table-hover"> 
+		<thead> 
+		 	<tr> 
+		 		<th></th> 
+		 		<th>Title</th> 
+		 		<th>Author</th> 
+				<th>User</th>
+				<th>Approved?</th> 
+				<th></th>
+	 		</tr> 
+	 	</thead> 
+	 	<tbody> 
+	 	{% for bookr in book_request %}
+	 		<tr> 
+		 		<th scope="row"></th> 
+		 			<td>{{bookr.title}}</td> 
+		 			<td>{{bookr.author}}</td> 
+		 			<td>{{bookr.username}}</td> 
+		 			{% if bookr.approved %}
+		 				<td><font color="#00cc00">Yes</font></td><td></td>
+		 			{% else %}
+		 				<td><font color="#ff0000">No</font></td>
+		 				{% if is_granted('ROLE_ADMIN') %}
+		 					<td>
+		 						<a href="/bookshop/approverequest/{{bookr.id}}" class="btn btn-success btn-xs">Approve</a>
+		 						<a href="/bookshop/deleterequest/{{bookr.id}}" class="btn btn-danger btn-xs">Remove</a>
+		 					</td>
+		 				{% else %}
+		 					<td></td>
+		 				{% endif %}
+		 			{% endif %}
+		 			
+		 	</tr> 
+	 	{% endfor %}
+		</tbody> 
+	</table>
+
+	<div class="navigation text-center">
+		{{ knp_pagination_render(book_request) }}
+	</div>
+
+{% endblock %}

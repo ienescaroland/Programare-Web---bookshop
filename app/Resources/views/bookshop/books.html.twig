@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-	<h2 class="page-header">List of books</h2>
+	<h3 class="page-header">List of books</h3>
 
 	<div>
         <form action="{{ path('bookshop_books') }}" method="get">
@@ -37,9 +37,11 @@
 		 			<td>{{book.author}}</td> 
 		 			<td>{{book.price}}£</td> 
 		 			<td>
-		 				<a href="/bookshop/details/{{book.id}}" class="btn btn-primary">View</a>
-		 				<a href="/bookshop/edit/{{book.id}}" class="btn btn-default">Edit</a>
-		 				<a href="/bookshop/delete/{{book.id}}" class="btn btn-danger">Delete</a>
+		 				<a href="/bookshop/details/{{book.id}}" class="btn btn-primary btn-xs">View</a>
+		 				{% if is_granted('ROLE_ADMIN') %}
+		 					<a href="/bookshop/edit/{{book.id}}" class="btn btn-default btn-xs">Edit</a>
+		 					<a href="/bookshop/delete/{{book.id}}" class="btn btn-danger btn-xs">Delete</a>
+		 				{% endif %}
 		 			</td>
 		 		</tr> 
 	 	{% endfor %}

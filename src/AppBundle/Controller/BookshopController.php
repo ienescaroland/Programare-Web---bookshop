@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Book;
 use AppBundle\Entity\User;
+use AppBundle\Entity\BookRequest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,21 +31,18 @@ class BookshopController extends Controller
     public function booksAction(Request $request)
     {   
         $em = $this->getDoctrine()->getManager();
-        //$books = $this->getDoctrine()
-        //    ->getRepository('AppBundle:Book')
-        //    ->findAll();
-        //$dql = "SELECT b FROM AppBundle:Book b";
-        //$query = $em->createQuery($dql);
-
         $queryBuilder = $em->getRepository('AppBundle:Book')->createQueryBuilder('b');
+
         if ($request->query->getAlnum('filterbook')) {
             $queryBuilder->where('b.title LIKE :title')
                 ->setParameter('title', '%' . $request->query->getAlnum('filterbook') . '%');
         }
+
         if ($request->query->getAlnum('filterauthor')) {
             $queryBuilder->where('b.author LIKE :author')
                 ->setParameter('author', '%' . $request->query->getAlnum('filterauthor') . '%');
         }
+
         $query = $queryBuilder->getQuery();
 
         $paginator = $this->get('knp_paginator');
@@ -89,13 +87,66 @@ class BookshopController extends Controller
 
             $this->addFlash(
                 'notice',
-                'Book Added'
+                'Book added.'
             );
             return $this->redirectToRoute('bookshop_books');
         }
 
         return $this->render('bookshop/add.html.twig', array(
             'form' => $form->createView()
+        ));
+    }
+
+    /**
+     * @Route("/requestbook", name="bookshop_request")
+     */
+    public function requestAction(Request $request)
+    {
+        $bRequest = new BookRequest;
+        $form = $this->createFormBuilder($bRequest)
+            ->add('title', TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('author', TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('submit', SubmitType::class, array('label' => 'Request', 'attr' => array('class' => 'btn btn-success', 'style' => 'margin-bottom:15px')))
+            ->getForm();
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $title = $form['title']->getData();
+            $author = $form['author']->getData();
+            $user = $this->getUser();
+            $username = $user->getUsername();
+            $approved = false;
+
+            $bRequest->setTitle($title);
+            $bRequest->setAuthor($author);
+            $bRequest->setUsername($username);
+            $bRequest->setApproved($approved);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($bRequest);
+            $em->flush();
+
+            $this->addFlash(
+                'notice',
+                'Request created.'
+            );
+
+            return $this->redirectToRoute('bookshop_request');
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $dql = "SELECT r FROM AppBundle:BookRequest r";
+        $query = $em->createQuery($dql);
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 8)
+        );
+
+        return $this->render('bookshop/bookrequest.html.twig', array(
+            'book_request' => $result,
+            'form' => $form->createView(),
         ));
     }
 
@@ -111,6 +162,46 @@ class BookshopController extends Controller
         return $this->render('bookshop/details.html.twig', array(
             'book' => $book
         ));
+    }
+
+    /**
+     * @Route("/bookshop/approverequest/{id}", name="bookshop_approve")
+     */
+    public function approveAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $bRequest = $em->getRepository('AppBundle:BookRequest')->find($id);
+        $titleRequest = $bRequest->getTitle();
+        $bookCheck = $em->getRepository('AppBundle:Book')->findOneBy(
+            array('title' => $titleRequest)
+        );
+
+        if (!$bookCheck) {
+            $book = new Book;
+            $book->setTitle($bRequest->getTitle());
+            $book->setAuthor($bRequest->getAuthor());
+            $book->setPrice(20);
+            $approve = true;
+            $bRequest->setApproved($approve);
+
+            $em->persist($book);
+            $em->flush();
+
+            $this->addFlash(
+                'notice',
+                'Request approved and book added to database.'
+            );
+
+            return $this->redirectToRoute('bookshop_request');
+        }
+        else {
+            $this->addFlash(
+                'danger',
+                'Request not approved, book already exists in database.'
+            );
+
+            return $this->redirectToRoute('bookshop_request');
+        }
     }
 
     /**
@@ -140,8 +231,8 @@ class BookshopController extends Controller
             $price = $form['price']->getData();
 
             $em = $this->getDoctrine()->getManager();
-            $book = $em->getRepository('AppBundle:Book')->find($id);
             
+            $book = $em->getRepository('AppBundle:Book')->find($id);
             $book->setTitle($title);
             $book->setAuthor($author);
             $book->setPrice($price);
@@ -150,8 +241,9 @@ class BookshopController extends Controller
 
             $this->addFlash(
                 'notice',
-                'Book Updated'
+                'Book updated.'
             );
+
             return $this->redirectToRoute('bookshop_books');
         }
 
@@ -161,7 +253,7 @@ class BookshopController extends Controller
         ));
     }
 
-     /**
+    /**
      * @Route("/bookshop/delete/{id}", name="bookshop_delete")
      */
     public function deleteAction($id)
@@ -173,11 +265,30 @@ class BookshopController extends Controller
         $em->flush();
         $this->addFlash(
             'notice',
-            'Book Removed'
+            'Book removed.'
         );
 
         return $this->redirectToRoute('bookshop_books');
     }
+
+    /**
+     * @Route("/bookshop/deleterequest/{id}", name="bookshop_delete_request")
+     */
+    public function deleterequestAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $bRequest = $em->getRepository('AppBundle:BookRequest')->find($id);
+
+        $em->remove($bRequest);
+        $em->flush();
+        $this->addFlash(
+            'notice',
+            'Request removed.'
+        );
+
+        return $this->redirectToRoute('bookshop_request');
+    }
+
 
     /**
      * @Route("/login", name="login")
