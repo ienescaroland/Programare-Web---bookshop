@@ -37,21 +37,34 @@
             </div>
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-
-                    <li style="float: left"><a href="/">Home</a></li>
-                    <li style="float: left"><a href="/books">Books</a></li>
-                    <li style="float: left"><a href="/requestbook">Request</a></li>
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <li style="float: left"><a href="/add">Add books</a></li>
-                    {% endif %}
-
+                    <li style="float: left"><a href="/">
+                        <span class="glyphicon glyphicon-home"></span> Home</a></li>
+                    <li style="float: left"><a href="/books">
+                        <span class="glyphicon glyphicon-book"></span> Books</a></li>
                     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                        <li style="float: right"><a href=" {{ logout_path() }} ">Logout</a></li>
-                    {% else %}
-                        <li style="float: right"><a href="/login">Login</a></li>
-                        <li style="float: right"><a href="/register">Register</a></li>
+                        <li style="float: left"><a href="/requestbook">
+                            <span class="glyphicon glyphicon-question-sign"></span> Request</a></li>
                     {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li><a href="/add">
+                            <span class="glyphicon glyphicon-file"></span> Add books</a></li>
+                    {% endif %}
+                </ul>
 
+                <ul class="nav navbar-nav navbar-right">
+                    {% if is_granted('ROLE_USER') %}
+                        <li><a href="/profile/ {{ app.user.id }}"><span class="glyphicon glyphicon-user">
+                            </span> Profile: {{ app.user.username }}</a></li>
+                    {% endif %}
+                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                        <li><a href=" {{ logout_path() }} ">
+                            <span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                    {% else %}
+                        <li><a href="/login">
+                            <span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                        <li><a href="/register">
+                            <span class="glyphicon glyphicon-user"></span> Register</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

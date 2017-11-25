@@ -3,11 +3,42 @@
 {% block body %}
 
 	<a class="btn btn-default" href="/books">Back to Books</a>
-	<hr>
+	
 	<h3 class="page-header">{{book.title}}</h3>
 	<ul class="list-group">
 		<li class = "list-group-item">Author: {{book.author}}</li>
 		<li class = "list-group-item">Price: {{book.price}}£</li>
+		
 	</ul>
-	
+	{% if book.stock == 0 %}
+		<a href="/buy/{{book.id}}" class="btn btn-success disabled">
+		 	<span class="glyphicon glyphicon-shopping-cart"></span> Buy</a>
+		 {% else %}
+		 	<a href="/buy/{{book.id}}" class="btn btn-success">
+		 		<span class="glyphicon glyphicon-shopping-cart"></span> Buy</a>
+	{% endif %}
+
+	<div>
+		<h4>Comments:</h4>
+		{% for bcomment in bcomments %}
+			<div class="panel panel-primary">
+				{% if is_granted('ROLE_ADMIN') %}
+		 			<td>
+		 				<a href="/deletecomment/{{bcomment[2]}}/{{book.id}}" class="btn btn-danger btn-xs">
+		 					<span class="glyphicon glyphicon-remove"></span> Remove</a>
+		 			</td>
+		 		{% endif %}
+		  		<div class="panel-heading"><b>{{bcomment[0]}}</b> said:</div>
+		      	<div class="panel-body" style="display:block; width:1145px; word-wrap:break-word">{{bcomment[1]}}</div>
+		    </div>
+	    {% endfor %}
+    </div>
+
+    <div style="width:600px; margin:0 auto;">
+    	<h4>Insert a comment!</h4>
+		{{form_start(form)}}
+		{{form_widget(form)}}
+		{{form_end(form)}}
+	</div>
+
 {% endblock %}

@@ -26,7 +26,8 @@ class UserType extends AbstractType
             ])
     		->add('submit', SubmitType::class, [
     			'attr' => [
-    				'class' => 'btn btn-success pull-right'
+    				'class' => 'btn btn-success pull-right',
+                    'style' => 'background-color: #37bc9b; border-color: #37bc9b'
     			]
     		]);
     }

@@ -42,6 +42,13 @@ class Book
      */
     private $price;
 
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="stock", type="integer")
+     */
+    private $stock;
+
 
     /**
      * Get id
@@ -123,6 +130,30 @@ class Book
     public function getPrice()
     {
         return $this->price;
+    }
+
+    /**
+     * Set stock
+     *
+     * @param integer $stock
+     *
+     * @return Book
+     */
+    public function setStock($stock)
+    {
+        $this->stock = $stock;
+
+        return $this;
+    }
+
+    /**
+     * Get stock
+     *
+     * @return int
+     */
+    public function getStock()
+    {
+        return $this->stock;
     }
 }
 

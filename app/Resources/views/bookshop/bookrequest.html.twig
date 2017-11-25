@@ -26,17 +26,19 @@
 		 			<td>{{bookr.author}}</td> 
 		 			<td>{{bookr.username}}</td> 
 		 			{% if bookr.approved %}
-		 				<td><font color="#00cc00">Yes</font></td><td></td>
+		 				<td><font color="#00cc00">Yes</font></td>
 		 			{% else %}
 		 				<td><font color="#ff0000">No</font></td>
-		 				{% if is_granted('ROLE_ADMIN') %}
-		 					<td>
-		 						<a href="/bookshop/approverequest/{{bookr.id}}" class="btn btn-success btn-xs">Approve</a>
-		 						<a href="/bookshop/deleterequest/{{bookr.id}}" class="btn btn-danger btn-xs">Remove</a>
-		 					</td>
-		 				{% else %}
-		 					<td></td>
-		 				{% endif %}
+		 			{% endif %}
+		 			{% if is_granted('ROLE_ADMIN') %}
+		 				<td>
+		 					<a href="/approverequest/{{bookr.id}}" class="btn btn-success btn-xs">
+		 						<span class="glyphicon glyphicon-ok"></span> Approve</a>
+		 					<a href="/deleterequest/{{bookr.id}}" class="btn btn-danger btn-xs">
+		 						<span class="glyphicon glyphicon-remove"></span> Remove</a>
+		 				</td>
+		 			{% else %}
+		 				<td></td>
 		 			{% endif %}
 		 			
 		 	</tr> 

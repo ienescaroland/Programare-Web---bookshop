@@ -7,7 +7,8 @@
         <form action="{{ path('bookshop_books') }}" method="get">
             <label for="filter">Filter by Author</label>
             <input name="filterauthor" type="text">
-            <button type="submit" class="btn btn-default btn-sm">Filter Now</button>
+            <button type="submit" class="btn btn-default btn-sm">
+            	<span class="glyphicon glyphicon-search"></span> Filter</button>
         </form>
 	</div>
 
@@ -15,7 +16,8 @@
         <form action="{{ path('bookshop_books') }}" method="get">
             <label for="filter">Filter by Title</label>
             <input name="filterbook" type="text">
-            <button type="submit" class="btn btn-default btn-sm">Filter Now</button>
+            <button type="submit" class="btn btn-default btn-sm">
+            	<span class="glyphicon glyphicon-search"></span> Filter</button>
         </form>
 	</div>
 
@@ -37,10 +39,20 @@
 		 			<td>{{book.author}}</td> 
 		 			<td>{{book.price}}£</td> 
 		 			<td>
-		 				<a href="/bookshop/details/{{book.id}}" class="btn btn-primary btn-xs">View</a>
+		 				<a href="/details/{{book.id}}" class="btn btn-primary btn-xs">
+		 					<span class="glyphicon glyphicon-info-sign"></span> View</a>
+		 				{% if book.stock == 0 %}
+		 					<a href="/buy/{{book.id}}" class="btn btn-success btn-xs disabled">
+		 						<span class="glyphicon glyphicon-shopping-cart"></span> Buy</a>
+		 					{% else %}
+		 						<a href="/buy/{{book.id}}" class="btn btn-success btn-xs">
+		 							<span class="glyphicon glyphicon-shopping-cart"></span> Buy</a>
+		 				{% endif %}
 		 				{% if is_granted('ROLE_ADMIN') %}
-		 					<a href="/bookshop/edit/{{book.id}}" class="btn btn-default btn-xs">Edit</a>
-		 					<a href="/bookshop/delete/{{book.id}}" class="btn btn-danger btn-xs">Delete</a>
+		 					<a href="/edit/{{book.id}}" class="btn btn-default btn-xs">
+		 						<span class="glyphicon glyphicon-pencil"></span>Edit</a>
+		 					<a href="/delete/{{book.id}}" class="btn btn-danger btn-xs">
+		 						<span class="glyphicon glyphicon-trash"></span>Delete</a>
 		 				{% endif %}
 		 			</td>
 		 		</tr> 
