@@ -10,7 +10,7 @@
 		<li class = "list-group-item">Price: {{book.price}}£</li>
 		
 	</ul>
-	{% if book.stock == 0 %}
+	{% if (book.stock == 0) or  is_granted('ROLE_ADMIN') %}
 		<a href="/buy/{{book.id}}" class="btn btn-success disabled">
 		 	<span class="glyphicon glyphicon-shopping-cart"></span> Buy</a>
 		 {% else %}

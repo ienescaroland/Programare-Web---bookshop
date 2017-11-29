@@ -41,7 +41,7 @@
 		 			<td>
 		 				<a href="/details/{{book.id}}" class="btn btn-primary btn-xs">
 		 					<span class="glyphicon glyphicon-info-sign"></span> View</a>
-		 				{% if book.stock == 0 %}
+		 				{% if book.stock == 0 or is_granted('ROLE_ADMIN') %}
 		 					<a href="/buy/{{book.id}}" class="btn btn-success btn-xs disabled">
 		 						<span class="glyphicon glyphicon-shopping-cart"></span> Buy</a>
 		 					{% else %}

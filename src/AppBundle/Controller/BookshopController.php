@@ -14,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use blackknight467\StarRatingBundle\Form\RatingType as RatingType;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use AppBundle\Form\UserType;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -167,6 +168,7 @@ class BookshopController extends Controller
 
         $comment = new Comment;
         $form = $this->createFormBuilder($comment)
+            //->add('rating', RatingType::class, array('label' => 'Rating'))
             ->add('message', TextareaType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px; width:700px')))
             ->add('submit', SubmitType::class, array('label' => 'Reply', 'attr' => array('class' => 'btn btn-success', 'style' => 'margin-bottom:15px')))
             ->getForm();
