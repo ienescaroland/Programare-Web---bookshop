@@ -14,6 +14,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\RadioType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use blackknight467\StarRatingBundle\Form\RatingType as RatingType;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use AppBundle\Form\UserType;
@@ -168,7 +170,7 @@ class BookshopController extends Controller
 
         $comment = new Comment;
         $form = $this->createFormBuilder($comment)
-            //->add('rating', RatingType::class, array('label' => 'Rating'))
+            ->add('rating', ChoiceType::class, array('label' => 'Rating', 'attr' => array('style' => 'width:60px'), 'choices' => array('1' => 1, '2' => 2, '3' => 3, '4' => 4, '5' => 5)))
             ->add('message', TextareaType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px; width:700px')))
             ->add('submit', SubmitType::class, array('label' => 'Reply', 'attr' => array('class' => 'btn btn-success', 'style' => 'margin-bottom:15px')))
             ->getForm();
@@ -179,10 +181,12 @@ class BookshopController extends Controller
             $user_id = $user->getId();
             $book_id = $id;
             $message = $form['message']->getData();
+            $rating = $form['rating']->getData();
 
             $comment->setUserId($user_id);
             $comment->setBookId($book_id);
             $comment->setMessage($message);
+            $comment->setRating($rating);
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($comment);
@@ -205,13 +209,15 @@ class BookshopController extends Controller
         $bcomments = array();
         foreach ($comments as $comment) {
             $commentId = $comment->getId();
+            $commentRating = $comment->getRating();
+            $diff = 5 - $commentRating;
             $userId = $comment->getUserId();
             $user = $this->getDoctrine()
                 ->getRepository('AppBundle:User')
                 ->find($userId);
             $username = $user->getUsername();
             $message = $comment->getMessage();
-            $bcomments[] = array($username, $message, $commentId);
+            $bcomments[] = array($username, $message, $commentRating, $diff, $commentId);
         }
 
         return $this->render('bookshop/details.html.twig', array(

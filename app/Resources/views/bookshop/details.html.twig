@@ -28,7 +28,19 @@
 		 					<span class="glyphicon glyphicon-remove"></span> Remove</a>
 		 			</td>
 		 		{% endif %}
-		  		<div class="panel-heading"><b>{{bcomment[0]}}</b> said:</div>
+		 		
+		  		<div class="panel-heading"><b>{{bcomment[0]}} </b>(
+		  			{% if bcomment[2] > 0 %}
+			  			{% for i in 1..bcomment[2] %}
+				  			<span class="fa fa-star checked"></span>
+						{% endfor %}
+					{% endif %}
+					{% if bcomment[3] > 0 %}
+			  			{% for i in 1..bcomment[3] %}
+				  			<span class="fa fa-star"></span>
+						{% endfor %}
+					{% endif %})
+				</div>
 		      	<div class="panel-body" style="display:block; width:1145px; word-wrap:break-word">{{bcomment[1]}}</div>
 		    </div>
 	    {% endfor %}

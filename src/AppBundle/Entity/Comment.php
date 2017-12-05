@@ -42,6 +42,12 @@ class Comment
      */
     private $message;
 
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="rating", type="integer")
+     */
+    private $rating;
 
     /**
      * Get id
@@ -123,6 +129,30 @@ class Comment
     public function getMessage()
     {
         return $this->message;
+    }
+
+    /**
+     * Set rating
+     *
+     * @param integer $rating
+     *
+     * @return Comment
+     */
+    public function setRating($rating)
+    {
+        $this->rating = $rating;
+
+        return $this;
+    }
+
+    /**
+     * Get rating
+     *
+     * @return int
+     */
+    public function getRating()
+    {
+        return $this->rating;
     }
 }
 
